@@ -1,2 +1,1 @@
-# feedback-tools
-Ferramenta para fazer feedback anonimo,
+``` docker run -it --rm --link feedback:mongo mongo mongo -u feedback -p 123456 --authenticationDatabase admin some-mongo/some-db ```

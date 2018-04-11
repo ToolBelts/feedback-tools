@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>{{ titulo }}</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!--[if lte IE 8]>
+    <script src="{{ url_for('static' , filename='assets/js/ie/html5shiv.js') }}"></script><![endif]-->
+
+    <link rel="stylesheet" href="{{ url_for('static' , filename='assets/css/main.css') }}"/>
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" href="{{ url_for('static' , filename='assets/css/ie9.css') }}"/><![endif]-->
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="{{ url_for('static' , filename='assets/css/ie8.css') }}"/><![endif]-->
+
+    <link rel="stylesheet" href="{{ url_for('static' , filename='assets/css/main.css') }}"/>
+
+    <link rel="stylesheet" href="{{ url_for('static' , filename='assets/css/bootstrap.css') }}"/>
+</head>
+<body>
+
+<!-- Sidebar -->
+<section id="sidebar">
+    <div class="inner">
+        <nav>
+            <ul>
+                <li><a href="#intro">Bem vindo</a></li>
+                <li><a href="#two">Dê seu Feedback</a></li>
+                <li><a href="#three">Cadastre-se</a></li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+<!-- Wrapper -->
+<div id="wrapper">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    {% block body %}{% endblock %}
+    <!-- Intro -->
+    <section id="intro" class="wrapper style1 fullscreen fade-up">
+        <div class="inner">
+            <h1>{{ titulo }}</h1>
+            <p>A ferramenta de feedback anônimo tem como intuito dar aquele toque para seu colega sem expo-lo em
+                público. Todo feedback passa por um filtro para que ninguem encaminhe informações ofensivas.</p>
+            <ul class="actions">
+                <!--<li><a href="#one" class="button scrolly">Learn more</a></li>-->
+            </ul>
+        </div>
+    </section>
+
+    <!-- Two -->
+    <section id="two" class="wrapper style3 fade-up">
+        <div class="inner">
+            <h2>Usuários Cadastrados</h2>
+            <p>Selecione a pessoa para que você deseja dar o feedback e escreva a feedback que você deseja
+                encaminhar.</p>
+            <div class="features">
+                {% if pessoas %}
+                {% for pessoa in pessoas %}
+                <section style="text-align: center;">
+                    <img src="{{pessoa.image }}" alt="{{ pessoa.name }}" class="rounded-circle" style="width: 25%">
+                    <h3>{{ pessoa.name }}</h3>
+                    <!--<input type="hidden" class="email-para-envio" value="{{ pessoa.email }}">-->
+                    <button class="button criar-feedback" value="{{ pessoa.email }}">Criar seu Feedback</button>
+                </section>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Three -->
+    <section id="three" class="wrapper style1 fade-up">
+        <div class="inner">
+            <h2>Cadastre-se</h2>
+            <p>Recomendamos que nossos usuários, adicionem uma foto para facilitar ser encontrado no sistema por seus
+                colegas de trabalho.</p>
+
+            <section>
+                <form action="{{url_for('new_user')}}" method="post" enctype="multipart/form-data">
+                    <div class="field first">
+                        <label for="name">Name</label>
+                        <input type="text" name="name" id="name"/>
+                    </div>
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="text" name="email" id="email"/>
+                    </div>
+                    <div class="field">
+                        <label for="input-file" class="button">Foto</label>
+                        <input type="file" id="input-file" name="file" value=""/>
+                        <span id='file-name'></span>
+                    </div>
+                    <ul class="actions">
+                        <li><a href="" class="button submit">Cadastrar</a></li>
+                    </ul>
+                </form>
+            </section>
+        </div>
+    </section>
+
+</div>
+
+<!-- Footer -->
+<footer id="footer" class="wrapper style1-alt">
+    <div class="inner">
+        <ul class="menu">
+            <li>Grupo Dasa - By Leandro Costa: Leco</li>
+        </ul>
+    </div>
+</footer>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background: #E82C0C">
+            <div class="modal-body">
+                <form action="{{ url_for('new_feedback') }}" method="post">
+                    <input type="hidden" id="email-to-feedback" name="email-to-feedback">
+                    <div class="field">
+                        <textarea name="feedback" id="feedback" rows="5"></textarea>
+                    </div>
+                    <br/>
+                    <div class="field">
+                        <button type="button" class="button" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="button">Criar Feedback</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="{{ url_for('static' , filename='assets/js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='assets/js/jquery.scrollex.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='assets/js/jquery.scrolly.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='assets/js/skel.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='assets/js/util.js') }}"></script>
+<!--[if lte IE 8]>
+<script src="{{ url_for('static' , filename='assets/js/ie/respond.min.js') }}"></script><![endif]-->
+<script src="{{ url_for('static' , filename='assets/js/main.js') }}"></script>
+<script src="{{ url_for('static' , filename='assets/js/bootstrap.js') }}"></script>
+<script>
+    var $input    = document.getElementById('input-file'),
+    $fileName = document.getElementById('file-name');
+
+    $input.addEventListener('change', function(){
+      $fileName.textContent = this.value;
+    });
+
+    $('.criar-feedback').click(function(){
+        $('#email-to-feedback').val($(this).val())
+        $('#myModal').modal('show');
+    });
+</script>
+</body>
+</html>
